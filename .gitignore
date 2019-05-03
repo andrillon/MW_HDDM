@@ -1,0 +1,5 @@
+localdef_wanderIM.m
+survey/.Rproj.user/*
+*.out
+*.m~
+.Rproj.user
