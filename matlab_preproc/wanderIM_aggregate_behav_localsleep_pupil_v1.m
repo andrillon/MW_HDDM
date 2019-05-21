@@ -149,7 +149,7 @@ for n=1:length(files)
     hddm_res=[hddm_res ; hddm_subj];
 end
 %% transform into tables and export
-tbl_headers={'SubID','BlockN','TrialN','StimCat','Perf','RCode','RT','W_Oz','W_Pz','W_Cz','W_Fz','Pup',};
+tbl_headers={'SubID','BlockN','TrialN','StimCat','Perf','RCode','RT','W_Oz','W_Pz','W_Cz','W_Fz','Pup'};
 tbl_hddm=array2table(hddm_res,'VariableNames',tbl_headers);
 tbl_hddm.SubID=categorical(tbl_hddm.SubID);
 tbl_hddm.StimCat=categorical(tbl_hddm.StimCat);
