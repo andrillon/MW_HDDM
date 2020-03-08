@@ -36,7 +36,7 @@ import pandas as pd
 import os
 
 # Load data from csv file into a NumPy structured array
-datapath = 'D:\SlowWave\\'
+datapath = '/Users/tand0009/Data/WanderIM/hddm/'
 datafile = 'HDDM_WIM_localsleep_pup_June5.txt'
 data = mydata = pd.read_csv(os.path.join(datapath, datafile))
 
@@ -147,15 +147,16 @@ def run_model(mypath, model_name, split, n_samples, burn, thin):
 # For loop to run the grid search and save output
 # =============================================== #
 
-mypath = 'D:\SlowWave\models\\'
+mypath = '/Users/tand0009/Data/WanderIM/hddm/'
 model_name = 'stimcoding_z_SW'
     
 modelCount = 0
 for split in splits:
     modelCount = modelCount + 1
-    print('We are up to model ', modelCount,'!')
     try:
-        run_model(mypath, split,2000,1000,1)
+           print('We are up to model ', modelCount,'!')
+           run_model(mypath, model_name, split,2000,1000,1)
     except:
-        continue
+          print('Failing to run model ', modelCount,'!')
+          continue
     
