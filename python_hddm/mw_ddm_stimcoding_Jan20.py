@@ -4,7 +4,7 @@ Created on Mon May 27 20:07:24 2019
 
 @author: Angus C. Burns
 
-Code for fitting the HDDM to 
+Code for fitting the Go/No-Go HDDM to Digit and Face Task data. 
 """
 
 ## Import required packages
