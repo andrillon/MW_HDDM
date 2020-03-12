@@ -28,6 +28,7 @@ mydata = mydata.rename(index=str, columns ={"stimulus": "stim", "RT": "rt", "Sub
 #Pre-processing to remove RTs shorter than NDT (~.25s) and longer than stimulus duration (1s)
 mydata.rt[mydata.response == 0] = 999
 mydata= mydata[mydata.rt > .3]
+mydata= mydata[(mydata.TrCat == 0 & mydata.DistProbe>-21) | ((mydata.TrCat == 1 & mydata.DistProbe>-3))]
 #mydata.rt[mydata.response == 0] = -1
 #mydata= mydata[mydata.rt < 1]
 #mydata.rt[mydata.response == 0] = 999
@@ -52,7 +53,7 @@ model_face_1 = hddm.HDDMStimCoding(mydata_face, stim_col= 'stim', depends_on={'v
 model_face_1.find_starting_values()# Create model and start MCMC sampling
 model_face_1.sample(2000, burn=1000, dbname=os.path.join(modelpath,'Faces/Model_1/model_face_1_noZ.db'), db='pickle')
 model_face_1.save(os.path.join(modelpath,'Faces/Model_1/model_face_1'))
-
+    
 # Extract stats
 model_face_1_stats = model_face_1.gen_stats()
 model_face_1_stats.to_csv(os.path.join(modelpath,'Faces/Model_1/model_face_1_stats_noZ.csv'))

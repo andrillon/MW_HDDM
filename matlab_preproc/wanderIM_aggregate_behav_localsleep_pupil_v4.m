@@ -1,13 +1,13 @@
-%% Init
+%% Initilaise - clear all variables and figures
 clear all
 close all
 
-% local file, set up paths
+%% run local file to set up paths
 run ../localdef_wanderIM
-addpath(genpath(lscpTools_path))
-addpath(genpath(spm12_path))
+addpath(genpath(lscpTools_path)) % Thomas' general toolkit
+addpath(genpath(spm12_path)) % SMP12 toolbox (EEG)
 
-data_path=[root_path filesep 'behav/'];
+data_path=[root_path filesep 'behav/']; % path of behavioural data
 eeg_path=[root_path filesep 'preproc_eeg'];
 pupil_path=[root_path filesep 'eyetracker'];
 eeg_path2=[root_path filesep 'preproc_ica'];
@@ -28,12 +28,14 @@ fixThr=[];
 myElecs=1:63;
 Fs_EEG=500;
 
-check=1;
+check=0;
 %%
 hddm_res=[];
 all_onsets=[];
 all_ERP=[];
 all_ERP2=[];
+redo=0;
+if redo==1
 for n=1:length(files)
     % load
     load([data_path filesep files(n).name]);
@@ -131,6 +133,15 @@ for n=1:length(files)
     test_res(mindistPr<-32 | mindistPr>0,:)=[];
     probeidx(mindistPr<-32 | mindistPr>0)=[];
     
+    temp_perf=min(test_res(:,11:12),[],2);
+    temp_cat=(test_res(:,5)==test_res(:,6));
+    code_resp=nan(length(temp_perf),1);
+    code_resp(temp_perf==1 & temp_cat==0)=1;
+    code_resp(temp_perf==1 & temp_cat==1)=0;
+    code_resp(temp_perf==0 & temp_cat==0)=0;
+    code_resp(temp_perf==0 & temp_cat==1)=1;
+    temp_RT=(test_res(:,10)-test_res(:,8));
+    
      if size(test_res,1)~=length(clean_start_trial)
         warning('... different number of trials')
     end
@@ -139,7 +150,7 @@ for n=1:length(files)
     
     % Loop across trials
     fprintf('%3.0f%%\n',0)
-    hddm_subj=nan(length(clean_start_trial),11+length(myElecs));
+    hddm_subj=nan(length(clean_start_trial),13+length(myElecs));
     if check
         temp_ERP=[];
         temp_ERP2=[];
@@ -155,6 +166,13 @@ for n=1:length(files)
         this_blockcond=test_res(nTr,2);
         this_trialidx=test_res(nTr,4);
         this_probeidx=probeidx(nTr);
+        this_probe=probe_res((probe_res(:,4)-1)*10+probe_res(:,1)==this_probeidx,:);
+        this_MS=this_probe(32);
+        if this_MS==4
+            this_MS=3;
+        end
+                this_Vig=this_probe(38);
+
         %         % discard face blocks
         %         if test_res(nTr,2)==1
         %             continue;
@@ -206,7 +224,7 @@ for n=1:length(files)
         [~,this_pupbegTridx]=findclosest(EL_data.time,this_pupbegTr);
         [~,this_pupendTridx]=findclosest(EL_data.time,this_pupbegTr);
         this_pupav=nanmean(EL_data.filt_pupilSize(this_pupbegTridx:this_pupendTridx));
-        hddm_subj(nTr,:)=[n this_blockidx this_trialidx this_probeidx dist_toprobe this_blockcond this_cat this_perf this_code this_rt this_waveF this_pupav];
+        hddm_subj(nTr,:)=[n this_blockidx this_trialidx this_probeidx dist_toprobe this_blockcond this_cat this_perf this_code this_rt this_waveF this_MS this_Vig this_pupav];
         
         all_onsets=[all_onsets ; [repmat([n this_blockcond this_cat],length(find_waves),1) these_Waves(find_waves,3) these_Waves(find_waves,5)+start_probe(this_probeidx)-this_begTr]];
     end
@@ -218,7 +236,7 @@ for n=1:length(files)
         all_ERP2=[all_ERP2 ; nanmean(temp_ERP2(max(abs(temp_ERP2),[],2)<500,:))];
     end
 end
-
+end
 %% Gather all individual datafiles
 hddm_res=[];
 for n=1:length(files)
@@ -226,34 +244,64 @@ for n=1:length(files)
     load([data_path filesep files(n).name]);
     SubID=SubjectInfo.subID;
     if ~ismember(SubID,GoodSudID)
+        fprintf('skip (bad ID)\n')
         continue;
     end
     if exist([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_v4.mat'])==0
-        continue;
+         fprintf('skip (missing file)\n')
+       continue;
     end
     fprintf('... %s\n',SubID)
     load([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_v4'])
-    Pup_F=hddm_subj(hddm_subj(:,4)==1,end);
+    
+    hddm_subj(hddm_subj(:,5)<-20,:)=[];
+
+    Pup_F=hddm_subj(hddm_subj(:,6)==1,end);
     boundaries=prctile(Pup_F,0:20:100);
     prPup_F=nan(size(Pup_F,1),1);
-    for nPer=1:5
+    for nPer=1:length(0:20:100)-2
         prPup_F(Pup_F>=boundaries(nPer) & Pup_F<boundaries(nPer+1))=nPer;
     end
-    
-    Pup_D=hddm_subj(hddm_subj(:,4)==2,end);
+        prPup_F(Pup_F>=boundaries(length(0:20:100)-1))=length(0:20:100)-1;
+
+    Pup_D=hddm_subj(hddm_subj(:,6)==2,end);
     boundaries=prctile(Pup_D,0:20:100);
     prPup_D=nan(size(Pup_D,1),1);
-    for nPer=1:5
+    for nPer=1:length(0:20:100)-2
         prPup_D(Pup_D>=boundaries(nPer) & Pup_D<boundaries(nPer+1))=nPer;
     end
-    
+    prPup_D(Pup_D>=boundaries(length(0:20:100)-1))=length(0:20:100)-1;
     %     figure;
     %     subplot(1,2,1); plot(Pup_D); subplot(1,2,2); plot(Pup_F);
     
     new_Pup=hddm_subj(:,end);
-    new_Pup(hddm_subj(:,4)==1)=prPup_F;
-    new_Pup(hddm_subj(:,4)==2)=prPup_D;
-    hddm_res=[hddm_res ; [hddm_subj new_Pup]];
+    new_Pup(hddm_subj(:,6)==1)=prPup_F;
+    new_Pup(hddm_subj(:,6)==2)=prPup_D;
+    
+    RT_F=hddm_subj(hddm_subj(:,6)==1,10);
+    boundaries=prctile(hddm_subj(hddm_subj(:,6)==1 & hddm_subj(:,7)==0 & hddm_subj(:,10)>=0.3,10),0:10:100);
+    prRT_F=nan(size(RT_F,1),1);
+    for nPer=1:length(0:10:100)-2
+        prRT_F(RT_F>=boundaries(nPer) & RT_F<boundaries(nPer+1))=nPer;
+    end
+    prRT_F(RT_F>=boundaries(length(0:10:100)-1))=length(0:10:100)-1;
+        prRT_F(RT_F<0.3)=nan;
+
+    RT_D=hddm_subj(hddm_subj(:,6)==2,10);
+    boundaries=prctile(hddm_subj(hddm_subj(:,6)==2 & hddm_subj(:,7)==0 & hddm_subj(:,10)>=0.3,10),0:10:100);
+    prRT_D=nan(size(RT_D,1),1);
+    for nPer=1:length(0:10:100)-2
+        prRT_D(RT_D>=boundaries(nPer) & RT_D<boundaries(nPer+1))=nPer;
+    end
+    prRT_D(RT_D>=boundaries(length(0:10:100)-1))=length(0:10:100)-1;
+    prRT_D(RT_D<0.3)=nan;
+    
+     new_RT=hddm_subj(:,10);
+    new_RT(hddm_subj(:,6)==1)=prRT_F;
+    new_RT(hddm_subj(:,6)==2)=prRT_D;
+    new_RT(hddm_subj(:,7)==1)=NaN;
+    
+    hddm_res=[hddm_res ; [hddm_subj new_Pup new_RT]];
 end
 %% transform into tables and export
 tbl_headers={'SubID','BlockN','TrialN','ProbeN','DistProbe','Task','StimCat','Perf','RCode','RT'};
@@ -261,9 +309,9 @@ load(path_PsychFTlayout);
 for nCh=1:63
      tbl_headers=[tbl_headers {sprintf('W_%s',layout.label{nCh})}];
 end
-tbl_headers=[tbl_headers ,{'Pup','pcPup'}];
+tbl_headers=[tbl_headers ,{'State','Vig','Pup','pcPup','pcRT'}];
 tbl_hddm=array2table(hddm_res,'VariableNames',tbl_headers);
 tbl_hddm.SubID=categorical(tbl_hddm.SubID);
 tbl_hddm.StimCat=categorical(tbl_hddm.StimCat);
-writetable(tbl_hddm,[root_path filesep 'hddm' filesep 'HDDM_WIM_localsleep_pup_Dec21_v4.txt']);
+writetable(tbl_hddm,[root_path filesep 'hddm' filesep 'HDDM_WIM_localsleep_pup_Dec21_v5.txt']);
 
