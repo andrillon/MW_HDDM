@@ -119,7 +119,7 @@ model_omni_3_traces.to_csv(os.path.join(modelpath,'Omni\Model_3\model_omni_3_tra
 model_omni_4 = hddm.HDDMStimCoding(pdata, include={'z'}, stim_col= 'stim', split_param='z', depends_on={'v': ['stim', 'State', 'Task'], 'a': ['State', 'Task'], 'z' : ['State', 'Task'], 't': ['State', 'Task']}, p_outlier=.05)
 model_omni_4.find_starting_values()
 model_omni_4.sample(2000, burn=1000, dbname=os.path.join(modelpath,'Omni\Model_4\model_omni_4.db'), db='pickle')
-model_omni_4.save(os.path.join(modelpath,'Omni\Model_2\model_omni_4'))
+model_omni_4.save(os.path.join(modelpath,'Omni\Model_4\model_omni_4'))
 model_omni_4.print_stats()
 model_omni_4.plot_posteriors_conditions()
 
