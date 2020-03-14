@@ -313,5 +313,7 @@ tbl_headers=[tbl_headers ,{'State','Vig','Pup','pcPup','pcRT'}];
 tbl_hddm=array2table(hddm_res,'VariableNames',tbl_headers);
 tbl_hddm.SubID=categorical(tbl_hddm.SubID);
 tbl_hddm.StimCat=categorical(tbl_hddm.StimCat);
+tbl_hddm.stimulus=double(tbl_hddm.StimCat=='0');
+tbl_hddm.response=double(~isnan(tbl_hddm.RT));
 writetable(tbl_hddm,[root_path filesep 'hddm' filesep 'HDDM_WIM_localsleep_pup_Dec21_v5.txt']);
 
