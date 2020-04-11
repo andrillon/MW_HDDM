@@ -34,7 +34,7 @@ hddm_res=[];
 all_onsets=[];
 all_ERP=[];
 all_ERP2=[];
-redo=0;
+redo=1;
 if redo==1
 for n=1:length(files)
     % load
@@ -95,9 +95,9 @@ for n=1:length(files)
     end
     all_freq=1./(abs((all_Waves(:,5)-all_Waves(:,7)))./Fs_EEG);
    fprintf('... ... %g %% waves discarded because of frequency\n',mean(all_freq>max_Freq)*100)
-    fprintf('... ... %g %% waves discarded because of max P2P ampl\n',mean(all_Waves(:,2)>art_ampl)*100)
+    fprintf('... ... %g %% waves discarded because of max P2P ampl\n',mean(all_Waves(:,4)>art_ampl)*100)
     fprintf('... ... %g %% waves discarded because of max pos ampl\n',mean(all_Waves(:,11)>max_posampl | all_Waves(:,14)>max_posampl| all_Waves(:,15)>max_posampl)*100)
-    all_Waves(all_freq>max_Freq | all_Waves(:,2)>art_ampl | all_Waves(:,11)>max_posampl| all_Waves(:,14)>max_posampl| all_Waves(:,15)>max_posampl,:)=[];
+    all_Waves(all_freq>max_Freq | all_Waves(:,4)>art_ampl | all_Waves(:,11)>max_posampl| all_Waves(:,14)>max_posampl| all_Waves(:,15)>max_posampl,:)=[];
     
     
     slow_Waves=[];
@@ -194,6 +194,11 @@ for n=1:length(files)
         this_wave=zeros(1,length(myElecs));
         this_waveF=zeros(1,length(myElecs));
         this_waveF(these_Waves(find_waves,3))=1;
+%         this_waveA=nan(1,length(myElecs));
+%         uniqueW=unique(these_Waves(find_waves,3));
+%         for nnW=1:length(uniqueW)
+%         this_waveA(uniqueW(nnW))=nanmean(these_Waves(these_Waves(find_waves,3)==uniqueW(nnW),4));
+%         end
         
         if check==1
             for i=1:length(find_waves)
@@ -238,7 +243,7 @@ for n=1:length(files)
 end
 end
 %% Gather all individual datafiles
-hddm_res=[];
+hddm_res=[]; nc=0;
 for n=1:length(files)
     % load
     load([data_path filesep files(n).name]);
@@ -252,8 +257,11 @@ for n=1:length(files)
        continue;
     end
     fprintf('... %s\n',SubID)
+    nc=nc+1;
+    allSubID{nc}=SubID;
     load([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_v4'])
     
+    hddm_subj(:,1)=str2num(SubID);
     hddm_subj(hddm_subj(:,5)<-20,:)=[];
 
     Pup_F=hddm_subj(hddm_subj(:,6)==1,end);
