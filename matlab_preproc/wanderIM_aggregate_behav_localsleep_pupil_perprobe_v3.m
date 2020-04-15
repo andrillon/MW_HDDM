@@ -185,8 +185,8 @@ if redo==1
         end
         %     hddm_res=[hddm_res ; hddm_temp(~isnan(hddm_temp(:,1)),:)];
         hddm_subj=hddm_subj(~isnan(hddm_subj(:,1)),:);
-        save([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_perprobe_thrE_P2P_v5'],'hddm_subj')
-        save([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_slowwave_perprobe_thrE_P2P_v5'],'Probe_Waves')
+        save([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_perprobe_thrE_P2P_v6'],'hddm_subj')
+        save([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_slowwave_perprobe_thrE_P2P_v6'],'Probe_Waves')
     end
 end
 %% Gather all individual datafiles
@@ -199,14 +199,14 @@ for n=1:length(files)
         fprintf('skip (bad ID)\n')
         continue;
     end
-    if exist([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_perprobe_thrE_P2P_v5.mat'])==0
+    if exist([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_perprobe_thrE_P2P_v6.mat'])==0
         fprintf('skip (missing file)\n')
         continue;
     end
     fprintf('... %s\n',SubID)
     nc=nc+1;
     allSubID{nc}=SubID;
-    load([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_perprobe_thrE_P2P_v5'])
+    load([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_perprobe_thrE_P2P_v6'])
     
     hddm_subj(:,1)=str2num(SubID);
     
@@ -256,7 +256,7 @@ tbl_hddm.SubID=categorical(tbl_hddm.SubID);
 
 tbl_hddm(tbl_hddm.SubID=='334',:)=[];
 
-writetable(tbl_hddm,[root_path filesep 'hddm' filesep 'HDDM_WIM_localsleep_pup_perprobe_thrE_P2P_v5.txt']);
+writetable(tbl_hddm,[root_path filesep 'hddm' filesep 'HDDM_WIM_localsleep_pup_perprobe_thrE_P2P_v6.txt']);
 
 %% Gather all individual datafiles
 All_Probe_Waves=[]; nc=0;
@@ -268,14 +268,14 @@ for n=1:length(files)
         fprintf('skip (bad ID)\n')
         continue;
     end
-    if exist([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_slowwave_perprobe_thrE_P2P_v5.mat'])==0
+    if exist([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_slowwave_perprobe_thrE_P2P_v6.mat'])==0
         fprintf('skip (missing file)\n')
         continue;
     end
     fprintf('... %s\n',SubID)
     nc=nc+1;
     allSubID{nc}=SubID;
-    load([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_slowwave_perprobe_thrE_P2P_v5'])
+    load([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_slowwave_perprobe_thrE_P2P_v6'])
     Probe_Waves(:,1)=str2num(SubID);
     
     Probe_Waves=double(Probe_Waves);
@@ -309,7 +309,7 @@ tbl_waves.nCh=categorical(tbl_waves.nCh);
 % end
 tbl_waves(tbl_waves.SubID=='334',:)=[];
 
-writetable(tbl_waves,[root_path filesep 'hddm' filesep 'HDDM_WIM_slowwave_perprobe_thrE_P2P_v5.txt']);
+writetable(tbl_waves,[root_path filesep 'hddm' filesep 'HDDM_WIM_slowwave_perprobe_thrE_P2P_v6.txt']);
 
 %%
 temp_topoMW=[];

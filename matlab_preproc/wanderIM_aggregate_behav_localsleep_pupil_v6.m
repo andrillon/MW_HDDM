@@ -40,11 +40,11 @@ for n=1:length(files)
     % load
     load([data_path filesep files(n).name]);
     SubID=SubjectInfo.subID;
-    if exist([eeg_path filesep 'triggers_S' SubID '.mat'])==0 || exist([pupil_path filesep 'wanderIM_eyelink_S' SubID '_clean.mat'])==0 || exist([eeg_path filesep 'triggers_S' SubID '.mat'])==0
+    if exist([eeg_path filesep 'triggers_S' SubID '.mat'])==0 || exist([eeg_path filesep 'triggers_S' SubID '.mat'])==0
         continue;
     end
      fprintf('... %s\n',SubID)
-     if ~ismember(SubID,GoodSudID)
+     if ~ismember(SubID,GoodSubID)
         continue;
     end
    %     CARS_flag(n)=CARS_bool(CARS_bool(:,1)==str2num(SubID),2);
@@ -146,8 +146,12 @@ for n=1:length(files)
         warning('... different number of trials')
     end
     % Pupil
-    load([pupil_path filesep 'wanderIM_eyelink_S' SubID '_clean.mat'])
-    
+    if exist([pupil_path filesep 'wanderIM_eyelink_S' SubID '_clean.mat'])==0        
+        noPup=1;
+    else
+        noPup=0;
+        load([pupil_path filesep 'wanderIM_eyelink_S' SubID '_clean.mat'])
+    end
     % Loop across trials
     fprintf('%3.0f%%\n',0)
     hddm_subj=nan(length(clean_start_trial),13+2*length(myElecs));
@@ -219,6 +223,7 @@ for n=1:length(files)
         end
         
         % pupil
+        if noPup==0
         pup_trialidx=find_trials(EL_events.Events.type,sprintf('^B%g_T%g$',this_blockidx,this_trialidx));
         pup_trialidxnext=find_trials(EL_events.Events.type,sprintf('^B%g_T%g$',this_blockidx,this_trialidx+1));
         this_pupbegTr=EL_events.Events.time(pup_trialidx);
@@ -230,13 +235,16 @@ for n=1:length(files)
         [~,this_pupbegTridx]=findclosest(EL_data.time,this_pupbegTr);
         [~,this_pupendTridx]=findclosest(EL_data.time,this_pupbegTr);
         this_pupav=nanmedian(EL_data.filt_pupilSize(this_pupbegTridx:this_pupendTridx));
+        else
+            this_pupav=NaN;
+        end
         hddm_subj(nTr,:)=[n this_blockidx this_trialidx this_probeidx dist_toprobe this_blockcond this_cat this_perf this_code this_rt this_waveF this_waveA this_MS this_Vig this_pupav];
         
         all_onsets=[all_onsets ; [repmat([n this_blockcond this_cat],length(find_waves),1) these_Waves(find_waves,3) these_Waves(find_waves,5)+start_probe(this_probeidx)-this_begTr]];
     end
     %     hddm_res=[hddm_res ; hddm_temp(~isnan(hddm_temp(:,1)),:)];
     hddm_subj=hddm_subj(~isnan(hddm_subj(:,1)),:);
-    save([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_thrE90neg_v5'],'hddm_subj')
+    save([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_thrE90P2P_v6'],'hddm_subj')
     if check
         all_ERP=[all_ERP ; nanmean(temp_ERP(max(abs(temp_ERP),[],2)<500,:))];
         all_ERP2=[all_ERP2 ; nanmean(temp_ERP2(max(abs(temp_ERP2),[],2)<500,:))];
@@ -249,18 +257,18 @@ for n=1:length(files)
     % load
     load([data_path filesep files(n).name]);
     SubID=SubjectInfo.subID;
-    if ~ismember(SubID,GoodSudID)
+    if ~ismember(SubID,GoodSubID)
         fprintf('skip (bad ID)\n')
         continue;
     end
-    if exist([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_thrE90neg_v5.mat'])==0
+    if exist([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_thrE90P2P_v6.mat'])==0
          fprintf('skip (missing file)\n')
        continue;
     end
     fprintf('... %s\n',SubID)
     nc=nc+1;
     allSubID{nc}=SubID;
-    load([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_thrE90neg_v5'])
+    load([root_path filesep 'behav' filesep 'HDDM_WIM' SubID '_localsleep_pup_thrE90P2P_v6'])
     
     hddm_subj(:,1)=str2num(SubID);
     hddm_subj(hddm_subj(:,5)<-20,:)=[];
@@ -328,5 +336,5 @@ tbl_hddm.SubID=categorical(tbl_hddm.SubID);
 tbl_hddm.StimCat=categorical(tbl_hddm.StimCat);
 tbl_hddm.stimulus=double(tbl_hddm.StimCat=='0');
 tbl_hddm.response=double(~isnan(tbl_hddm.RT));
-writetable(tbl_hddm,[root_path filesep 'hddm' filesep 'HDDM_WIM_localsleep_amp_pup_thrE90neg_Dec21_v5.txt']);
+writetable(tbl_hddm,[root_path filesep 'hddm' filesep 'HDDM_WIM_localsleep_amp_pup_thrE90P2P_v6.txt']);
 
