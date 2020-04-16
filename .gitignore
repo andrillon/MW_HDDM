@@ -1,3 +1,4 @@
+.DS_Store*
 Models/*
 Models_TA/*
 localdef_wanderIM.m
