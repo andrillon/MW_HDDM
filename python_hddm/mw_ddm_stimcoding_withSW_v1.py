@@ -77,13 +77,13 @@ for nE in range(0, 4):
     # Face - Model 2 (SW)
     model_W = hddm.HDDMStimCoding(mydata_face, include={'z'}, stim_col= 'stim', split_param='z', depends_on={'v': ['stim', ColNames[nE]], 'a': ColNames[nE], 'z' : ColNames[nE], 't': ColNames[nE]}, p_outlier=.05)
     model_W.find_starting_values()
-    modelname2 = 'Faces/model_SW/model_' + ColNames[nE] + '.db'
-    model_W.sample(2000, burn=1000, dbname=os.path.join(modelpath,modelname2), db='pickle')
-    modelname = 'Faces/model_SW/model_' + ColNames[nE]
+    modelname2 = 'Faces/model_SW/model_mid_' + ColNames[nE] + '.db'
+    model_W.sample(200, burn=100, dbname=os.path.join(modelpath,modelname2), db='pickle')
+    modelname = 'Faces/model_SW/model_mid_' + ColNames[nE]
     #model_W.save(os.path.join(modelpath,modelname))    
     # Extract stats
     model_W_stats = model_W.gen_stats()
-    statsname = 'Faces/model_SW/model_' + ColNames[nE] + '_stats.csv'
+    statsname = 'Faces/model_SW/model_mid_' + ColNames[nE] + '_stats.csv'
     model_W_stats.to_csv(os.path.join(modelpath,statsname))    
     # Extract traceplots
     model_W.plot_posteriors(save=True, path=os.path.join(modelpath,'Faces/model_SW/Plots/Traceplots'))
@@ -94,21 +94,21 @@ for nE in range(0, 4):
     model_W_traces['z(1)'] = np.exp(model_W_traces['z_trans(1)'])/(1+np.exp(model_W_traces['z_trans(1)']))
     model_W_traces['v_bias(0)'] = abs(model_W_traces['v(0.1)'])-abs(model_W_traces['v(0.0)'])
     model_W_traces['v_bias(1)'] = abs(model_W_traces['v(1.1)'])-abs(model_W_traces['v(1.0)'])
-    tracename = 'Faces/model_SW/model_' + ColNames[nE] + '_traces.csv'
+    tracename = 'Faces/model_SW/model_mid_' + ColNames[nE] + '_traces.csv'
     model_W_traces.to_csv(os.path.join(modelpath,tracename))
     
     
     # Digit - Model 2 (SW)
     model_W = hddm.HDDMStimCoding(mydata_digit, include={'z'}, stim_col= 'stim', split_param='z', depends_on={'v': ['stim', ColNames[nE]], 'a': ColNames[nE], 'z' : ColNames[nE], 't': ColNames[nE]}, p_outlier=.05)
     model_W.find_starting_values()
-    modelname2 = 'Digits/model_SW/model_' + ColNames[nE] + '.db'
-    model_W.sample(2000, burn=1000, dbname=os.path.join(modelpath,modelname2), db='pickle')
-    modelname = 'Digits/model_SW/model_' + ColNames[nE]
+    modelname2 = 'Digits/model_SW/model_mid_' + ColNames[nE] + '.db'
+    model_W.sample(200, burn=100, dbname=os.path.join(modelpath,modelname2), db='pickle')
+    modelname = 'Digits/model_SW/model_mid_' + ColNames[nE]
     #model_W.save(os.path.join(modelpath,modelname))
     
     # Extract stats
     model_W_stats = model_W.gen_stats()
-    statsname = 'Digits/model_SW/model_' + ColNames[nE] + '_stats.csv'
+    statsname = 'Digits/model_SW/model_mid_' + ColNames[nE] + '_stats.csv'
     model_W_stats.to_csv(os.path.join(modelpath,statsname))    
     
     # Extract traceplots
@@ -120,6 +120,6 @@ for nE in range(0, 4):
     model_W_traces['z(1)'] = np.exp(model_W_traces['z_trans(1)'])/(1+np.exp(model_W_traces['z_trans(1)']))
     model_W_traces['v_bias(0)'] = abs(model_W_traces['v(0.1)'])-abs(model_W_traces['v(0.0)'])
     model_W_traces['v_bias(1)'] = abs(model_W_traces['v(1.1)'])-abs(model_W_traces['v(1.0)'])
-    tracename = 'Digits/model_SW/model_' + ColNames[nE] + '_traces.csv'
+    tracename = 'Digits/model_SW/model_mid_' + ColNames[nE] + '_traces.csv'
     model_W_traces.to_csv(os.path.join(modelpath,tracename))
 
