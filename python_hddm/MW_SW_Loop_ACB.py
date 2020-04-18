@@ -4,14 +4,10 @@ Created on Mon May 27 20:07:24 2019
 
 @author: Angus C. Burns
 
-Code for generating a grid of variables based on slow-wave amplplitude and frequency 
-and then fitting HDDMStimCoding models and saving output. 
+Code for fitting HDDMStimCoding models and saving output - adjusted for Thomas' SW data & electrodes. 
 
 You should be able to run the below code to preprocess the data, define the functions 
-for fitting and model and then run the For loop at the bottom to run the grid search. 
-
-The function will create a new folder for each of the models (currently 10 x 10 = 100) with 
-a unique name based on the frequency F and amplitude A, e.g. model_nEF10A20.
+for fitting and model and then run the For loop at the bottom to run the series of models, one each for each electrode. 
 
 Make sure to adjust the necessary paths:
     datapath
@@ -39,8 +35,8 @@ from matplotlib import pyplot as plt
 
 # Load data from csv file into a NumPy structured array
 datapath = r"C:\Users\angus\Documents\MW_HDDM\Data"
-mypath = r"C:\Users\angus\Documents\MW_HDDM\Models\SW & Pupil"
-datafile = 'HDDM_WIM_localsleep_pup_Dec21_v5.txt'
+mypath = r'C:\Users\angus\Documents\MW_HDDM\Models\SW & Pupil\test'
+datafile = 'HDDM_WIM_localsleep_amp_pup_thrE90P2P_Dec21_v5.txt'
 data = mydata = pd.read_csv(os.path.join(datapath, datafile))
 
 
@@ -132,7 +128,7 @@ def run_model(mypath, model_name, nE, n_samples, burn, thin):
 # For loop to run the grid search and save output
 # =============================================== #
 
-mypath = r'C:\Users\angus\Documents\MW_HDDM\Models\SW & Pupil\test'
+
 model_name = 'stimcoding_z_SW'
     
 modelCount = 0
