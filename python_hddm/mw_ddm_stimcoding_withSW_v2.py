@@ -48,7 +48,7 @@ mydata_digit = mydata[mydata.Task==2]
 #ColNames=['W_Fz','W_Cz','W_Pz','W_Oz']
 ColNames=mydata.columns
 #CentralElec = [11, 33, 22 ,26]
-for nE in range(10, 63):
+for nE in range(10, 73):
     print('***** WORKING ON ELEC ' + ColNames[nE] + ' *****\n\n\n')
 #    # Both - Model 2 (SW)
 #    model_W = hddm.HDDMStimCoding(mydata, include={'z'}, stim_col= 'stim', split_param='z', depends_on={'v': ['stim', ColNames[nE]], 'a': ColNames[nE], 'z' : ColNames[nE], 't': ColNames[nE]}, p_outlier=.05)
@@ -96,7 +96,7 @@ for nE in range(10, 63):
     tracename = 'Faces/model_SW/model_' + ColNames[nE] + '_traces.csv'
     model_W_traces.to_csv(os.path.join(modelpath,tracename))
     
-for nE in range(10, 63):
+for nE in range(10, 73):
     print('***** WORKING ON ELEC ' + ColNames[nE] + ' *****\n\n\n')   
     # Digit - Model 2 (SW)
     model_W = hddm.HDDMStimCoding(mydata_digit, include={'z'}, stim_col= 'stim', split_param='z', depends_on={'v': ['stim', ColNames[nE]], 'a': ColNames[nE], 'z' : ColNames[nE], 't': ColNames[nE]}, p_outlier=.05)
