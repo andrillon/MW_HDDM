@@ -134,22 +134,6 @@ def run_model(mypath, model_name, nE, n_samples, burn, thin):
 
 
 model_name = 'stimcoding_z_SW'
-    
-
-def parloop():
-    # Create a list for the model variables
-    nEs = list(mydata.columns[10:14])
-    modelCount = 0
-
-    for nE in nEs:
-        print('***** WORKING ON ELEC ' + nE + ' *****\n\n\n')
-        modelCount = modelCount + 1
-        try:
-            print('We are up to model ', modelCount,'!')
-            run_model(mypath, model_name, nE, 50, 10, 1)
-        except:
-            print('Failing to run model ', modelCount,'!')
-        continue
 
 from joblib import Parallel, delayed
 nEs = list(mydata.columns[10:14])
