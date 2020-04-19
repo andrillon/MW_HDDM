@@ -50,8 +50,6 @@ mydata= mydata[mydata.rt > .3]
 # Calculate total number of outliers 
 total_outliers = len(data)-len(mydata)
 
-# Create a list for the model variables
-nEs = list(mydata.columns[10:73])
 
 # Define functions to calculate aic and bic as additional model comparison metrics
 def aic(self):
@@ -121,8 +119,10 @@ def run_model(mypath, model_name, nE, n_samples, burn, thin):
     tracesFrame= pd.DataFrame(data=tracesarray[0:,0:]) 
     tracesFrame.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'traces_{}.csv'.format(nE)))
     
-    "---------------------------------------------------------------------------------------------"
+    return m 
     
+    "---------------------------------------------------------------------------------------------"
+
     
 # =============================================== #
 # For loop to run the grid search and save output
@@ -134,7 +134,7 @@ model_name = 'stimcoding_z_SW'
 
 def parloop():
     # Create a list for the model variables
-    nEs = list(mydata.columns[10:73])
+    nEs = list(mydata.columns[10:14])
     modelCount = 0
 
     for nE in nEs:
@@ -149,9 +149,8 @@ def parloop():
 
 
 from ipyparallel import Client
+rc = Client(profle='default')
+
 v = Client()[:]
-# Edit this for numer of cpus (x)
-jobs = v.map(parloop, range(x))
+jobs = v.map(parloop, range(4))
 
-
-    
