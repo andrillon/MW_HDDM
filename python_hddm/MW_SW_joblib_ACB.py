@@ -110,14 +110,18 @@ def run_model(mypath, model_name, nE, n_samples, burn, thin):
     results = m.gen_stats()
     results.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'model_stats_{}.csv'.format(nE)))    
     
+    #save group traces
+    m_traces = m.get_group_traces()
+    m_traces.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'model_traces_{}.csv'.format(nE)))
+
     # save the traces for inspection
-    params_of_interest = ['a(0.0)', 'a(1.0)', 'v(0.0.0.0)', 'v(1.0.0.0)', 'v(0.0.1.0)', 'v(1.0.1.0)', 't(0.0)', 't(1.0)', 'z(0.0)', 'z(1.0)']
-    traces = []
-    for p in range(len(params_of_interest)):
-        traces.append(m.nodes_db.node[params_of_interest[p]].trace.gettrace())
-    tracesarray = np.asarray(traces)
-    tracesFrame= pd.DataFrame(data=tracesarray[0:,0:]) 
-    tracesFrame.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'traces_{}.csv'.format(nE)))
+    # params_of_interest = ['a(0.0)', 'a(1.0)', 'v(0.0.0.0)', 'v(1.0.0.0)', 'v(0.0.1.0)', 'v(1.0.1.0)', 't(0.0)', 't(1.0)', 'z(0.0)', 'z(1.0)']
+    # traces = []
+    # for p in range(len(params_of_interest)):
+    #     traces.append(m.nodes_db.node[params_of_interest[p]].trace.gettrace())
+    # tracesarray = np.asarray(traces)
+    # tracesFrame= pd.DataFrame(data=tracesarray[0:,0:]) 
+    # tracesFrame.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'traces_{}.csv'.format(nE)))
     
     return m 
     
@@ -130,22 +134,6 @@ def run_model(mypath, model_name, nE, n_samples, burn, thin):
 
 
 model_name = 'stimcoding_z_SW'
-    
-
-def parloop():
-    # Create a list for the model variables
-    nEs = list(mydata.columns[10:14])
-    modelCount = 0
-
-    for nE in nEs:
-        print('***** WORKING ON ELEC ' + nE + ' *****\n\n\n')
-        modelCount = modelCount + 1
-        try:
-            print('We are up to model ', modelCount,'!')
-            run_model(mypath, model_name, nE, 50, 10, 1)
-        except:
-            print('Failing to run model ', modelCount,'!')
-        continue
 
 from joblib import Parallel, delayed
 nEs = list(mydata.columns[10:14])
