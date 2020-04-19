@@ -33,13 +33,9 @@ import os
 import matplotlib
 from matplotlib import pyplot as plt
 
-import multiprocessing
-from joblib import Parallel, delayed
-from tqdm import tqdm
-
 # Load data from csv file into a NumPy structured array
-datapath = "/Users/tand0009/WorkGit/projects/inprogress/MW_HDDM/Data/"
-mypath = "/Users/tand0009/WorkGit/projects/inprogress/MW_HDDM/Models/"
+datapath = "/home/tandrill/WorkGit/MW_HDDM/Data/"
+mypath = "/home/tandrill/WorkGit/MW_HDDM/Models/"
 datafile = 'HDDM_WIM_localsleep_amp_pup_thrE90P2P_Dec21_v5.txt'
 data = mydata = pd.read_csv(os.path.join(datapath, datafile))
 
@@ -54,8 +50,6 @@ mydata= mydata[mydata.rt > .3]
 # Calculate total number of outliers 
 total_outliers = len(data)-len(mydata)
 
-# Create a list for the model variables
-nEs = list(mydata.columns[10:73])
 
 # Define functions to calculate aic and bic as additional model comparison metrics
 def aic(self):
@@ -98,7 +92,7 @@ def run_model(mypath, model_name, nE, n_samples, burn, thin):
 
     print("begin sampling")
     m.sample(n_samples, burn=burn, thin=thin, db='pickle', dbname=os.path.join(mypath, 'model_{}'.format(nE), 'modelfit-{}.db'.format(nE)))
-    #m.save(os.path.join(mypath, 'model_{}'.format(nE), 'modelfit-{}.model'.format(nE))) # save the model to disk
+    m.save(os.path.join(mypath, 'model_{}'.format(nE), 'modelfit-{}.model'.format(nE))) # save the model to disk
 
     # ============================================ #
     # save the output values
@@ -125,31 +119,34 @@ def run_model(mypath, model_name, nE, n_samples, burn, thin):
     tracesFrame= pd.DataFrame(data=tracesarray[0:,0:]) 
     tracesFrame.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'traces_{}.csv'.format(nE)))
     
-    "---------------------------------------------------------------------------------------------"
+    return m 
     
+    "---------------------------------------------------------------------------------------------"
+
     
 # =============================================== #
 # For loop to run the grid search and save output
 # =============================================== #
 
 
-num_cores = multiprocessing.cpu_count()
-inputs = tqdm(nE)
-
-if __name__ == "__main__":
-    processed_list = Parallel(n_jobs=num_cores)(delayed(run_model)(i,parameters) for i in inputs)
-
-
 model_name = 'stimcoding_z_SW'
     
-modelCount = 0
-for nE in nEs:
-    print('***** WORKING ON ELEC ' + nE + ' *****\n\n\n')
-    modelCount = modelCount + 1
-    try:
-        print('We are up to model ', modelCount,'!')
-        run_model(mypath, model_name, nE, 500, 100, 1)
-    except:
-        print('Failing to run model ', modelCount,'!')
+
+def parloop():
+    # Create a list for the model variables
+    nEs = list(mydata.columns[10:14])
+    modelCount = 0
+
+    for nE in nEs:
+        print('***** WORKING ON ELEC ' + nE + ' *****\n\n\n')
+        modelCount = modelCount + 1
+        try:
+            print('We are up to model ', modelCount,'!')
+            run_model(mypath, model_name, nE, 50, 10, 1)
+        except:
+            print('Failing to run model ', modelCount,'!')
         continue
-    
+
+from joblib import Parallel, delayed
+nEs = list(mydata.columns[10:14])
+Parallel(n_jobs=4)(delayed(run_model)(mypath, model_name, nE, 50, 10, 1) for nE in nEs)
