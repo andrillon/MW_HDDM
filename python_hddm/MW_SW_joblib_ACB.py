@@ -110,14 +110,18 @@ def run_model(mypath, model_name, nE, n_samples, burn, thin):
     results = m.gen_stats()
     results.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'model_stats_{}.csv'.format(nE)))    
     
+    #save group traces
+    m_traces = m.get_group_traces()
+    m_traces.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'model_traces_{}.csv'.format(nE)))
+
     # save the traces for inspection
-    params_of_interest = ['a(0.0)', 'a(1.0)', 'v(0.0.0.0)', 'v(1.0.0.0)', 'v(0.0.1.0)', 'v(1.0.1.0)', 't(0.0)', 't(1.0)', 'z(0.0)', 'z(1.0)']
-    traces = []
-    for p in range(len(params_of_interest)):
-        traces.append(m.nodes_db.node[params_of_interest[p]].trace.gettrace())
-    tracesarray = np.asarray(traces)
-    tracesFrame= pd.DataFrame(data=tracesarray[0:,0:]) 
-    tracesFrame.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'traces_{}.csv'.format(nE)))
+    # params_of_interest = ['a(0.0)', 'a(1.0)', 'v(0.0.0.0)', 'v(1.0.0.0)', 'v(0.0.1.0)', 'v(1.0.1.0)', 't(0.0)', 't(1.0)', 'z(0.0)', 'z(1.0)']
+    # traces = []
+    # for p in range(len(params_of_interest)):
+    #     traces.append(m.nodes_db.node[params_of_interest[p]].trace.gettrace())
+    # tracesarray = np.asarray(traces)
+    # tracesFrame= pd.DataFrame(data=tracesarray[0:,0:]) 
+    # tracesFrame.to_csv(os.path.join(mypath, 'model_{}'.format(nE), 'traces_{}.csv'.format(nE)))
     
     return m 
     
