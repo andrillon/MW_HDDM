@@ -77,7 +77,7 @@ for nE in range(10, 73):
     # Face - Model 2 (SW)
     model_W = hddm.HDDMStimCoding(mydata_face, include={'z'}, stim_col= 'stim', split_param='z', depends_on={'v': ['stim', ColNames[nE]], 'a': ColNames[nE], 'z' : ColNames[nE], 't': ColNames[nE]}, p_outlier=.05)
     model_W.find_starting_values()
-    model_W.sample(2000, burn=1000, dbname=os.path.join(modelpath,'Faces/model_SW/model_W.db'), db='pickle')
+    model_W.sample(200, burn=100, dbname=os.path.join(modelpath,'Faces/model_SW/model_W.db'), db='pickle')
     modelname = 'Faces/model_SW/model_' + ColNames[nE]
     #model_W.save(os.path.join(modelpath,modelname))    
     # Extract stats
@@ -101,7 +101,7 @@ for nE in range(10, 73):
     # Digit - Model 2 (SW)
     model_W = hddm.HDDMStimCoding(mydata_digit, include={'z'}, stim_col= 'stim', split_param='z', depends_on={'v': ['stim', ColNames[nE]], 'a': ColNames[nE], 'z' : ColNames[nE], 't': ColNames[nE]}, p_outlier=.05)
     model_W.find_starting_values()
-    model_W.sample(2000, burn=1000, dbname=os.path.join(modelpath,'Digits/model_SW/model_W.db'), db='pickle')
+    model_W.sample(200, burn=100, dbname=os.path.join(modelpath,'Digits/model_SW/model_W.db'), db='pickle')
     modelname = 'Digits/model_SW/model_' + ColNames[nE]
     #model_W.save(os.path.join(modelpath,modelname))
     

@@ -73,7 +73,7 @@ mydata_digit = mydata[mydata.Task==2]
 # Faces - Model 2 (state)
 model_face_2 = hddm.HDDMStimCoding(mydata_face, include={'z'}, stim_col= 'stim', split_param='z', depends_on={'v': ['stim', 'State'], 'a': 'State', 'z' : 'State', 't': 'State'}, p_outlier=.05)
 model_face_2.find_starting_values()
-model_face_2.sample(4000, burn=1000, dbname=os.path.join(modelpath,'Faces/Model_2/model_face_2.db'), db='pickle')
+model_face_2.sample(100, burn=50, dbname=os.path.join(modelpath,'Faces/Model_2/model_face_2.db'), db='pickle')
 #model_face_2.save(os.path.join(modelpath,'Faces/Model_2/model_face_2'))
 
 # Extract stats

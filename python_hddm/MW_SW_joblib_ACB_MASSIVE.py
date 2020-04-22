@@ -149,4 +149,4 @@ def parloop():
 
 from joblib import Parallel, delayed
 nEs = list(mydata.columns[10:14])
-Parallel(n_jobs=4)(delayed(run_model)(mypath, model_name, nE, 50, 10, 1) for nE in nEs)
+Parallel(n_jobs=36)(delayed(run_model)(mypath, model_name, nE, 50, 10, 1) for nE in nEs)
